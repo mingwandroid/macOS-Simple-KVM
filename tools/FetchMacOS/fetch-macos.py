@@ -112,9 +112,10 @@ class MacOSProduct:
 @click.command()
 @click.option('-o', '--output-dir', default="BaseSystem/", help="Target directory for package output.")
 @click.option('-c', '--catalog-id', default="PublicRelease", help="Name of catalog.")
+@click.option('-e', '--fetch-esd', is_flag=True, help="Fetch ESD instead of BaseSystem.")
 @click.option('-p', '--product-id', default="", help="Product ID (as seen in SoftwareUpdate).")
 @click.option('-l', '--latest', is_flag=True, help="Get latest available macOS package.")
-def fetchmacos(output_dir="BaseSystem/", catalog_id="PublicRelease", product_id="", latest=False):
+def fetchmacos(output_dir="BaseSystem/", catalog_id="PublicRelease", fetch_esd=False, product_id="", latest=False):
     # Get the remote catalog data
     remote = SoftwareService(catalog_id)
     catalog = remote.getcatalog()
@@ -136,7 +137,7 @@ def fetchmacos(output_dir="BaseSystem/", catalog_id="PublicRelease", product_id=
     logging.info("Selected macOS Product: {}".format(product_id))
 
     # Download package to disk
-    product.fetchpackages(output_dir, keyword="BaseSystem")
+    product.fetchpackages(output_dir, keyword="BaseSystem" if not fetch_esd else "InstallESDDmg.pkg")
 
 if __name__ == "__main__":
     fetchmacos()
